@@ -2,6 +2,7 @@ import { useEffect, useContext, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
+import TableFooter from '@material-ui/core/TableFooter';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableRow from '@material-ui/core/TableRow';
@@ -13,19 +14,23 @@ import { getTodoList } from './../../api/todo';
 import { toDoContext } from './../../context/ToDoContext';
 import ToDoTableToolbar from './ToDoTableToolbar';
 import ToDoTableHead from './ToDoTableHead';
+import ToDoTableFooter from './ToDoTableFooter';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    margin: '25px 0 25px 25px'
+    margin: '25px 0 25px 25px',
+    display: 'flex',
+    justifyContent: 'center'
   },
   paper: {
     border: '1px solid',
     padding: theme.spacing(1),
     width: '80vw',
+    height: 'auto',
     marginBottom: theme.spacing(2),
   },
   container: {
-    height: '60vh'
+    height: 'auto',
   },
   table: {
     minWidth: 750
@@ -91,6 +96,9 @@ const ToDoList = () => {
                 );
               })}
             </TableBody>
+            <TableFooter>
+              <ToDoTableFooter />
+            </TableFooter>
           </Table>
         </TableContainer>
       </Paper>

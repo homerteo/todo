@@ -1,9 +1,5 @@
 import { fade, makeStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -56,7 +52,7 @@ const ToDoTableToolbar = (props) => {
       </Typography>
       <Tooltip title="Escriba una palabra clave para filtrar las tareas">
         <div className={classes.search}>
-        <TextField
+          <TextField
             id="filter-input"
             label="Filtrar"
             variant="outlined"
