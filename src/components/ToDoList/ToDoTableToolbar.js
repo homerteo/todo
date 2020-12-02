@@ -1,7 +1,10 @@
+import { useState } from 'react';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Tooltip from '@material-ui/core/Tooltip';
+import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+import ToggleButton from '@material-ui/lab/ToggleButton';
 import IconButton from '@material-ui/core/IconButton';
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
 import AssignmentLateIcon from '@material-ui/icons/AssignmentLate';
@@ -31,8 +34,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ToDoTableToolbar = (props) => {
+  const [alignment, setAlignment] = useState('left');
+  const handleAlignment = (event, newAlignment) => {
+    setAlignment(newAlignment);
+  };
+
   const classes = useStyles();
-  const { numSelected, finishTasks } = props;
+  const { numSelected, finishTasks, filterTasks } = props;
 
   return(
     <Toolbar className={classes.root}>
@@ -49,21 +57,41 @@ const ToDoTableToolbar = (props) => {
         </div>
       ) : null}
       <div className={classes.filter}>
-        <Tooltip title="Ver todas las tareas" aria-label="filtrar por todas las tareas">
-          <IconButton>
-            <FormatListBulletedIcon />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Ver solo las tareas terminadas" aria-label="filtrar por tareas terminadas">
-          <IconButton>
-            <AssignmentTurnedInIcon />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Ver solo las tareas pendientes" aria-label="filtrar por tareas pendientes">
-          <IconButton>
-            <AssignmentLateIcon />
-          </IconButton>
-        </Tooltip>
+        <ToggleButtonGroup
+          value={alignment}
+          exclusive
+          onChange={handleAlignment}
+          aria-label="text alignment"
+          size="small"
+        >
+          <ToggleButton
+            value="all"
+            aria-label="Ver todas las tareas"
+            onClick={() => filterTasks('')}
+          >
+            <Tooltip title="Ver todas las tareas" aria-label="filtrar por todas las tareas">
+              <FormatListBulletedIcon/>
+            </Tooltip>
+          </ToggleButton>
+          <ToggleButton
+            value="finished"
+            aria-label="Ver las tareas terminadas"
+            onClick={() => filterTasks('finished')}
+          >
+            <Tooltip title="Ver solo las tareas terminadas" aria-label="filtrar por tareas terminadas">
+              <AssignmentTurnedInIcon />
+            </Tooltip>
+          </ToggleButton>
+          <ToggleButton
+            value="pending"
+            aria-label="Ver las tareas pendientes"
+            onClick={() => filterTasks('pending')}
+          >
+            <Tooltip title="Ver solo las tareas pendientes" aria-label="filtrar por tareas pendientes">
+              <AssignmentLateIcon />
+            </Tooltip>
+          </ToggleButton>
+        </ToggleButtonGroup>
       </div>
     </Toolbar>
   );

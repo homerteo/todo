@@ -29,6 +29,11 @@
       "name": "implementar la creación y eliminación de tareas",
       "state": "pending",
       "id": 6
+    },
+    {
+      "name": "implementar los filtros",
+      "state": "pending",
+      "id": 7
     }
   ]
 }
