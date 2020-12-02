@@ -1,0 +1,29 @@
+{
+  "tasks": [
+    {
+      "id": 1,
+      "name": "implementar un jsonserver",
+      "state": "finished"
+    },
+    {
+      "id": 2,
+      "name": "Implementar la vista de Login",
+      "state": "finished"
+    },
+    {
+      "id": 3,
+      "name": "Implementar la funcionalidad de Login",
+      "state": "pending"
+    },
+    {
+      "id": 4,
+      "name": "crear el componente de tareas",
+      "state": "pending"
+    },
+    {
+      "name": "implementar la creación de nueva tarea",
+      "state": "pending",
+      "id": 5
+    }
+  ]
+}

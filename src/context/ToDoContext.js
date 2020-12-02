@@ -17,10 +17,22 @@ class ToDoContextProvider extends React.Component {
     };
   }
 
+  initialAuthVerification = () => {
+    const myLocalStorage = window.localStorage;
+    const accessToken = myLocalStorage.getItem("accessToken");
+    if (accessToken !== null) {
+      apiClient.setToken(accessToken);
+      return this.setState({
+        accessToken
+      });
+    }
+  }
+
   submitLogin = async (email, password) => {
     try {
         const { accessToken } = await postLogin(email, password);
         const myLocalStorage = window.localStorage;
+        myLocalStorage.clear();
         myLocalStorage.setItem("accessToken", accessToken);
         apiClient.setToken(accessToken);
         this.setState({
@@ -45,6 +57,7 @@ class ToDoContextProvider extends React.Component {
       <toDoContext.Provider
         value={{
           ...this.state,
+          initialAuthVerification: this.initialAuthVerification,
           submitLogin: this.submitLogin,
           logout: this.logout
           }}
