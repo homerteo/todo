@@ -12,7 +12,7 @@ export function postLogin(email, password) {
 
 export function getTodoList() {
   return apiClient.APP.get(`${urlApi}/tasks`).then((response) => {
-    const { data } =  response;
+    const { data } = response;
     return data;
   })
 }
