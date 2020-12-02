@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { Switch, Route, Redirect } from "react-router-dom";
 import Login from './Login';
 import ToDoList from './ToDoList'
+import HeaderBar from './common/HeaderBar'
 import { toDoContext } from "../context/ToDoContext";
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
@@ -44,6 +45,9 @@ const ToDoApp = () => {
 
   return (
     <div>
+      <header>
+        <HeaderBar />
+      </header>
       <Switch>
         <PublicRoute
             isLoged={accessToken !== null}
