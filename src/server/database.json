@@ -24,6 +24,11 @@
       "name": "implementar la creación de nueva tarea",
       "state": "pending",
       "id": 5
+    },
+    {
+      "name": "implementar la creación y eliminación de tareas",
+      "state": "pending",
+      "id": 6
     }
   ]
 }
