@@ -17,6 +17,7 @@ import ToDoTableFooter from './ToDoTableFooter';
 import CheckIcon from '@material-ui/icons/Check';
 import PriorityHighIcon from '@material-ui/icons/PriorityHigh';
 import { getTodoList, postTask, deleteTask, patchTask } from './../../api/todo';
+import { filterList } from './../../utils/filters';
 import { toDoContext } from './../../context/ToDoContext';
 
 const useStyles = makeStyles((theme) => ({
@@ -113,6 +114,17 @@ const ToDoList = () => {
     setSelected([]);
   }
 
+  const filterTasks = (taskState) => {
+    const { taskList } = state;
+    const filteredTaskList = filterList(taskList, taskState);
+    setState(prevState => (
+      {
+        ...prevState,
+        filteredTaskList
+      }
+    ));
+  } 
+
   useEffect(() => {
     initialAuthVerification();
   }, []);
@@ -159,7 +171,11 @@ const ToDoList = () => {
   return(
     <div className={classes.root}>
       <Paper className={classes.paper} elevation={3}>
-        <ToDoTableToolbar numSelected={selected.length} finishTasks={finishTasks} />
+        <ToDoTableToolbar
+          numSelected={selected.length}
+          finishTasks={finishTasks}
+          filterTasks={filterTasks}
+        />
         <TableContainer className={classes.container}>
           <Table
             className={classes.table}
