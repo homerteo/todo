@@ -9,3 +9,10 @@ export function postLogin(email, password) {
       return response.data;
   })
 }
+
+export function getTodoList() {
+  return apiClient.APP.get(`${urlApi}/tasks`).then((response) => {
+    const { data } =  response;
+    return data;
+  })
+}
