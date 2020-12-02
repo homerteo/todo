@@ -33,3 +33,14 @@ export function deleteTask(id) {
     return response;
   })
 }
+
+export function patchTask(id) {
+  const config = {
+    headers: {
+        'Content-Type': 'application/json'
+    }
+  }
+  return apiClient.APP.patch(`${urlApi}/tasks/${id}`, {state: 'finished'}, config).then((response) => {
+    return response;
+  })
+}

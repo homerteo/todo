@@ -13,17 +13,22 @@
     {
       "id": 3,
       "name": "Implementar la funcionalidad de Login",
-      "state": "pending"
+      "state": "finished"
     },
     {
       "id": 4,
       "name": "crear el componente de tareas",
-      "state": "pending"
+      "state": "finished"
     },
     {
       "name": "implementar la creación de nueva tarea",
-      "state": "pending",
+      "state": "finished",
       "id": 5
+    },
+    {
+      "name": "implementar la creación y eliminación de tareas",
+      "state": "pending",
+      "id": 6
     }
   ]
 }

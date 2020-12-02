@@ -15,8 +15,8 @@ import ToDoTableToolbar from './ToDoTableToolbar';
 import ToDoTableHead from './ToDoTableHead';
 import ToDoTableFooter from './ToDoTableFooter';
 import CheckIcon from '@material-ui/icons/Check';
-import CloseIcon from '@material-ui/icons/Close';
-import { getTodoList, postTask, deleteTask } from './../../api/todo';
+import PriorityHighIcon from '@material-ui/icons/PriorityHigh';
+import { getTodoList, postTask, deleteTask, patchTask } from './../../api/todo';
 import { toDoContext } from './../../context/ToDoContext';
 
 const useStyles = makeStyles((theme) => ({
@@ -101,6 +101,18 @@ const ToDoList = () => {
     }
   }
 
+  const finishTasks = async () => {
+    await selected.forEach(async id => {
+      try {
+        await patchTask(id)
+      } catch(error) {
+        console.error(error);
+      }
+    })
+    await getTaskList();
+    setSelected([]);
+  }
+
   useEffect(() => {
     initialAuthVerification();
   }, []);
@@ -109,26 +121,29 @@ const ToDoList = () => {
     getTaskList();
   }, [])
 
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
-      );
+  const handleClick = (event, id, taskState) => {
+    if (taskState!=='finished') {
+      const selectedIndex = selected.indexOf(id);
+      let newSelected = [];
+  
+      if (selectedIndex === -1) {
+        newSelected = newSelected.concat(selected, id);
+      } else if (selectedIndex === 0) {
+        newSelected = newSelected.concat(selected.slice(1));
+      } else if (selectedIndex === selected.length - 1) {
+        newSelected = newSelected.concat(selected.slice(0, -1));
+      } else if (selectedIndex > 0) {
+        newSelected = newSelected.concat(
+          selected.slice(0, selectedIndex),
+          selected.slice(selectedIndex + 1),
+        );
+      }
+      setSelected(newSelected);
     }
-    setSelected(newSelected);
+    return;
   };
 
-  const isSelected = (name) => selected.indexOf(name) !== -1;
+  const isSelected = (id) => selected.indexOf(id) !== -1;
 
   const handleChange = (target) => {
     const {name, value} = target;
@@ -144,7 +159,7 @@ const ToDoList = () => {
   return(
     <div className={classes.root}>
       <Paper className={classes.paper} elevation={3}>
-        <ToDoTableToolbar />
+        <ToDoTableToolbar numSelected={selected.length} finishTasks={finishTasks} />
         <TableContainer className={classes.container}>
           <Table
             className={classes.table}
@@ -156,12 +171,12 @@ const ToDoList = () => {
             <TableBody>
               {state.taskList.length > 0 && state.filteredTaskList.map((task, index) => {
                 const labelId = `task-table-checkbox-${index}`;
-                const isItemSelected = isSelected(task.name);
+                const isItemSelected = isSelected(task.id);
 
                 return(
                   <TableRow
                     hover
-                    onClick={(event) => handleClick(event, task.name)}
+                    onClick={(event) => handleClick(event, task.id, task.state)}
                     aria-checked={isItemSelected}
                     tabIndex={-1}
                     key={task.id}
@@ -171,14 +186,19 @@ const ToDoList = () => {
                       <Checkbox
                         checked={isItemSelected}
                         inputProps={{ 'aria-labelledby': labelId }}
+                        disabled={task.state==='finished'}
                       />
                     </TableCell>
                     <TableCell component="th" id={labelId} scope="row" padding="none">
                       <div className={classes.taskCell}>
                         {task.state === 'pending' ? (
-                          <CloseIcon color="primary" fontSize="large" />
+                          <Tooltip title='Tarea pendiente'>
+                            <PriorityHighIcon color="primary" fontSize="large" />
+                          </Tooltip>
                         ) : (
-                          <CheckIcon color="secondary" fontSize="large" />
+                          <Tooltip title='Tarea finalizada'>
+                            <CheckIcon color="secondary" fontSize="large" />
+                          </Tooltip>
                         )}
                         {task.name}
                       </div>
