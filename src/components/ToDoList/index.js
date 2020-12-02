@@ -7,6 +7,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import Checkbox from '@material-ui/core/Checkbox';
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -15,6 +16,8 @@ import { toDoContext } from './../../context/ToDoContext';
 import ToDoTableToolbar from './ToDoTableToolbar';
 import ToDoTableHead from './ToDoTableHead';
 import ToDoTableFooter from './ToDoTableFooter';
+import CheckIcon from '@material-ui/icons/Check';
+import CloseIcon from '@material-ui/icons/Close';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -34,11 +37,18 @@ const useStyles = makeStyles((theme) => ({
   },
   table: {
     minWidth: 750
+  },
+  taskCell: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center'
   }
 }));
 
 const ToDoList = () => {
   const [taskList, setTask] = useState([]);
+  const [selected, setSelected] = useState([]);
   const classes = useStyles();
   const context = useContext(toDoContext);
   const { initialAuthVerification } = context;
@@ -60,6 +70,27 @@ const ToDoList = () => {
     getTaskList();
   }, [])
 
+  const handleClick = (event, name) => {
+    const selectedIndex = selected.indexOf(name);
+    let newSelected = [];
+
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selected, name);
+    } else if (selectedIndex === 0) {
+      newSelected = newSelected.concat(selected.slice(1));
+    } else if (selectedIndex === selected.length - 1) {
+      newSelected = newSelected.concat(selected.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      newSelected = newSelected.concat(
+        selected.slice(0, selectedIndex),
+        selected.slice(selectedIndex + 1),
+      );
+    }
+    setSelected(newSelected);
+  };
+
+  const isSelected = (name) => selected.indexOf(name) !== -1;
+
   return(
     <div className={classes.root}>
       <Paper className={classes.paper} elevation={3}>
@@ -75,17 +106,36 @@ const ToDoList = () => {
             <TableBody>
               {taskList.length > 0 && taskList.map((task, index) => {
                 const labelId = `task-table-checkbox-${index}`;
+                const isItemSelected = isSelected(task.name);
 
                 return(
                   <TableRow
                     hover
+                    onClick={(event) => handleClick(event, task.name)}
+                    aria-checked={isItemSelected}
                     tabIndex={-1}
                     key={task.id}
+                    selected={isItemSelected}
                   >
+                    <TableCell padding="checkbox">
+                      <>
+                        <Checkbox
+                          checked={isItemSelected}
+                          inputProps={{ 'aria-labelledby': labelId }}
+                        />
+                      </>
+                    </TableCell>
                     <TableCell component="th" id={labelId} scope="row" padding="none">
+                      <div className={classes.taskCell}>
+                        {task.state === 'pending' ? (
+                          <CloseIcon color="primary" fontSize="large" />
+                        ) : (
+                          <CheckIcon color="secondary" fontSize="large" />
+                        )}
                         {task.name}
-                      </TableCell>
-                  <TableCell align="right">
+                      </div>
+                    </TableCell>
+                    <TableCell align="right">
                     <Tooltip title="Eliminar esta tarea">
                       <IconButton aria-label={`Eliminar la tarea ${task.name}`}>
                         <DeleteIcon />
@@ -97,7 +147,7 @@ const ToDoList = () => {
               })}
             </TableBody>
             <TableFooter>
-              <ToDoTableFooter />
+              <ToDoTableFooter numSelected={selected.length} numTasks={taskList.length} />
             </TableFooter>
           </Table>
         </TableContainer>

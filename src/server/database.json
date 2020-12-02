@@ -3,12 +3,12 @@
     {
       "id": 1,
       "name": "implementar un jsonserver",
-      "state": "pending"
+      "state": "finished"
     },
     {
       "id": 2,
       "name": "Implementar la vista de Login",
-      "state": "pending"
+      "state": "finished"
     },
     {
       "id": 3,
