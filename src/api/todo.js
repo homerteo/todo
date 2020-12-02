@@ -16,3 +16,20 @@ export function getTodoList() {
     return data;
   })
 }
+
+export function postTask(data) {
+  const config = {
+      headers: {
+          'Content-Type': 'application/json'
+      }
+  }
+  return apiClient.APP.post(`${urlApi}/tasks`, data, config).then((response) => {
+    return response;
+  })
+}
+
+export function deleteTask(id) {
+  return apiClient.APP.delete(`${urlApi}/tasks/${id}`).then((response) => {
+    return response;
+  })
+}

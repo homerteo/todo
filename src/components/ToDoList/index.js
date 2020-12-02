@@ -11,13 +11,13 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { getTodoList } from './../../api/todo';
-import { toDoContext } from './../../context/ToDoContext';
 import ToDoTableToolbar from './ToDoTableToolbar';
 import ToDoTableHead from './ToDoTableHead';
 import ToDoTableFooter from './ToDoTableFooter';
 import CheckIcon from '@material-ui/icons/Check';
 import CloseIcon from '@material-ui/icons/Close';
+import { getTodoList, postTask, deleteTask } from './../../api/todo';
+import { toDoContext } from './../../context/ToDoContext';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -47,7 +47,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ToDoList = () => {
-  const [taskList, setTask] = useState([]);
+  const [state, setState] = useState({
+    taskList: [],
+    filteredTaskList: [],
+    newTask: ''
+  });
   const [selected, setSelected] = useState([]);
   const classes = useStyles();
   const context = useContext(toDoContext);
@@ -56,7 +60,42 @@ const ToDoList = () => {
   const getTaskList = async () => {
     try {
       const data = await getTodoList();
-      setTask(data);
+      setState(prevState => (
+        {
+          ...prevState,
+          taskList: data,
+          filteredTaskList: data
+        }
+      ));
+    } catch(error) {
+      console.error(error);
+    }
+  }
+
+  const addTask = async () => {
+    try {
+      const { newTask } = state;
+      const data = {
+        name: newTask,
+        state: 'pending'
+      }
+      await postTask(data);
+      await getTaskList(data);
+      setState(prevState => (
+        {
+          ...prevState,
+          newTask: ''
+        }
+      ));
+    } catch(error) {
+      console.error(error)
+    }
+  }
+
+  const removeTask = async (id) => {
+    try {
+      await deleteTask(id);
+      await getTaskList();
     } catch(error) {
       console.error(error);
     }
@@ -91,6 +130,17 @@ const ToDoList = () => {
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
+  const handleChange = (target) => {
+    const {name, value} = target;
+    console.log(name, value);
+    setState(prevState => (
+      {
+        ...prevState,
+        [name]: value
+      }
+    ))
+  }
+
   return(
     <div className={classes.root}>
       <Paper className={classes.paper} elevation={3}>
@@ -104,7 +154,7 @@ const ToDoList = () => {
           >
             <ToDoTableHead />
             <TableBody>
-              {taskList.length > 0 && taskList.map((task, index) => {
+              {state.taskList.length > 0 && state.filteredTaskList.map((task, index) => {
                 const labelId = `task-table-checkbox-${index}`;
                 const isItemSelected = isSelected(task.name);
 
@@ -118,12 +168,10 @@ const ToDoList = () => {
                     selected={isItemSelected}
                   >
                     <TableCell padding="checkbox">
-                      <>
-                        <Checkbox
-                          checked={isItemSelected}
-                          inputProps={{ 'aria-labelledby': labelId }}
-                        />
-                      </>
+                      <Checkbox
+                        checked={isItemSelected}
+                        inputProps={{ 'aria-labelledby': labelId }}
+                      />
                     </TableCell>
                     <TableCell component="th" id={labelId} scope="row" padding="none">
                       <div className={classes.taskCell}>
@@ -137,7 +185,10 @@ const ToDoList = () => {
                     </TableCell>
                     <TableCell align="right">
                     <Tooltip title="Eliminar esta tarea">
-                      <IconButton aria-label={`Eliminar la tarea ${task.name}`}>
+                      <IconButton
+                        aria-label={`Eliminar la tarea ${task.name}`}
+                        onClick={() => removeTask(task.id)}
+                      >
                         <DeleteIcon />
                       </IconButton>
                     </Tooltip>
@@ -147,7 +198,13 @@ const ToDoList = () => {
               })}
             </TableBody>
             <TableFooter>
-              <ToDoTableFooter numSelected={selected.length} numTasks={taskList.length} />
+              <ToDoTableFooter
+                numSelected={selected.length}
+                numTasks={state.taskList.length}
+                handleChange={handleChange}
+                newTask={state.newTask}
+                addTask={addTask}
+              />
             </TableFooter>
           </Table>
         </TableContainer>

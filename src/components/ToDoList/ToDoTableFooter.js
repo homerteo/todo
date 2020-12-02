@@ -1,4 +1,3 @@
-import Toolbar from '@material-ui/core/Toolbar';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 import { makeStyles } from '@material-ui/core/styles';
@@ -20,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
 
 const ToDoTableFooter = (props) => {
   const classes = useStyles();
-  const { numSelected, numTasks } = props; 
+  const { numSelected, numTasks, handleChange, newTask, addTask } = props; 
   return(
       <TableRow>
         <TableCell padding='default' align='center' key='check'>
@@ -35,14 +34,20 @@ const ToDoTableFooter = (props) => {
                 variant="outlined"
                 name="newTask"
                 className={classes.inputInput}
-                // value={filter}
-                // onChange={({ target }) => handleChange(target)}
+                value={newTask}
+                onChange={({ target }) => handleChange(target)}
               />
             </>
           </Tooltip>
         </TableCell>
         <TableCell padding='default' align='center' key='delete'>
-          <Button variant="outlined" color="primary" size="large">
+          <Button
+            variant="outlined"
+            color="primary"
+            size="large"
+            disabled={newTask.length === 0}
+            onClick={() => addTask()}
+          >
             Agregar
           </Button>
         </TableCell>
