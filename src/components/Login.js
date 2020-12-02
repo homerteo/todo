@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useContext } from "react";
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { makeStyles } from "@material-ui/core/styles";
@@ -7,6 +7,8 @@ import Paper from '@material-ui/core/Paper';
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Alert from '@material-ui/lab/Alert';
+
+import { toDoContext } from './../context/ToDoContext';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -33,6 +35,9 @@ const useStyles = makeStyles((theme) => ({
 
 const Login = () => {
   const classes = useStyles();
+  const context = useContext(toDoContext);
+  const { submitLogin } = context;
+
   const formik = useFormik({
     initialValues: {
       email: '',
@@ -44,8 +49,13 @@ const Login = () => {
         .required('El email no puede ir vacio'),
       password: Yup.string()
         .required('El password es obligatorio')
-    })
+    }),
+    onSubmit: async (values, { resetForm, setErrors }) => {
+        await submitLogin(values.email, values.password);
+        resetForm({});
+    }
   });
+
   return (
     <Grid container className={classes.root} spacing={2}>
       <Grid item sm={12} md={6} >
@@ -69,6 +79,7 @@ const Login = () => {
             <TextField
               id="password"
               label="Password"
+              type="password"
               variant="outlined"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
@@ -80,9 +91,6 @@ const Login = () => {
             <Button variant="contained" color="primary" type="submit">Entrar</Button>
           </form>
         </Paper>
-      </Grid>
-      <Grid item sm={12} md={6}>
-
       </Grid>
     </Grid>
   );
