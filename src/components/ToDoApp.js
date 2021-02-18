@@ -1,5 +1,4 @@
 import { useEffect, useContext } from 'react';
-import PropTypes from "prop-types";
 import { Switch, Route, Redirect } from "react-router-dom";
 import Login from './Login';
 import ToDoList from './ToDoList'
@@ -35,6 +34,7 @@ const PublicRoute = ({ component: Component, restricted, ...rest }) => {
     />
   );
 };
+
 const ToDoApp = () => {
   const context = useContext(toDoContext);
   const { accessToken, initialAuthVerification } = context;

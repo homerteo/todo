@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 import { makeStyles } from '@material-ui/core/styles';
@@ -19,13 +20,14 @@ const useStyles = makeStyles((theme) => ({
 
 const ToDoTableFooter = (props) => {
   const classes = useStyles();
-  const { numSelected, numTasks, handleChange, newTask, addTask } = props; 
+  const { numSelected, numTasks, handleChange, newTask, addTask } = props;
+
   return(
       <TableRow>
         <TableCell padding='default' align='center' key='check'>
           Tareas: {numSelected}/{numTasks}
         </TableCell>
-        <TableCell padding='default' align='rigth' key='task'>
+        <TableCell padding='default' align='right' key='task'>
           <Tooltip title="Escriba una nueva tarea">
             <>
               <TextField
@@ -53,6 +55,14 @@ const ToDoTableFooter = (props) => {
         </TableCell>
       </TableRow>
   );
+}
+
+ToDoTableFooter.propTypes = {
+  numSelected: PropTypes.number.isRequired,
+  numTasks: PropTypes.number.isRequired,
+  handleChange: PropTypes.func.isRequired,
+  newTask: PropTypes.string.isRequired,
+  addTask: PropTypes.func.isRequired,
 }
 
 export default ToDoTableFooter;

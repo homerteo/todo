@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import { useState } from 'react';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -95,6 +96,12 @@ const ToDoTableToolbar = (props) => {
       </div>
     </Toolbar>
   );
+}
+
+ToDoTableToolbar.propTypes = {
+  numSelected: PropTypes.number.isRequired,
+  finishTasks: PropTypes.func.isRequired,
+  filterTasks: PropTypes.func.isRequired,
 }
 
 export default ToDoTableToolbar;
